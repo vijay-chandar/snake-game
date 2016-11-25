@@ -45,7 +45,10 @@ pygame.display.update()
 snakeHead = pygame.image.load('SnakeHead.png')
 snakeTail = pygame.image.load('SnakeTail.png')
 snakeBody = pygame.image.load('snakeBody.png')
-Apple = pygame.image.load('Apple.png')
+Image = [pygame.image.load('image1.jpg'),pygame.image.load('image2.jpg'),pygame.image.load('image3.jpg'),pygame.image.load('image4.jpg')]
+Two = pygame.image.load('two.jpg')
+From = pygame.image.load('of.jpg')
+The = pygame.image.load('the.jpg')
 JonDead = pygame.image.load('dead.jpg')
 RunFlash = pygame.image.load('flash.jpg')
 flashNarrow = pygame.image.load('flashNarrow.jpg')
@@ -57,6 +60,7 @@ scoreSymbol2 = pygame.image.load('arrowRight.png')
 
 run = True
 gameOver = False
+image_no = 1;
 
 Turn = {}
 fpscount = 0
@@ -64,8 +68,15 @@ fpscount = 0
 score = 0
 highscore = 0
 
-def DrawApple(apple_x, apple_y):
-	screen.blit(Apple, (apple_x, apple_y))	
+def x_y():
+	x = random.randrange(0, (screen_width - apple_width)/apple_width)
+	y = random.randrange(3, (screen_height - apple_width)/apple_width)
+
+	return [x,y]
+
+def DrawApple(apple_x, apple_y, image_no):
+	screen.blit(Image[image_no], (apple_x, apple_y))	
+
 
 def DrawSnake(block_size, snakeList, HeadDirection):
 
@@ -87,7 +98,7 @@ def DrawSnake(block_size, snakeList, HeadDirection):
 	for co_ord in snakeList[:-1]:
 		screen.blit(snakeBody, (co_ord[0], co_ord[1]))
 
-def fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection):
+def fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection, image_no):
 					
 	screen.fill(white)
 	screen.blit(thunder, (0, 0))
@@ -95,7 +106,7 @@ def fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection):
 	screen.blit(scoreSymbol, (270, 0))
 	display_message(("Score :" + str(score)), black, -290, "med")
 	screen.blit(scoreSymbol2, (480, 0))
-	DrawApple(apple_x, apple_y)
+	DrawApple(apple_x, apple_y, image_no)
 	DrawSnake(block_size, snakeList, HeadDirection)
 	pygame.display.update()
 		
@@ -134,7 +145,7 @@ def GameOverDisplay(apple_x, apple_y, snakeList, HeadDirection):
 		pygame.display.update()
 		time.sleep(0.1)
 
-		fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection)
+		fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection, image_no)
 		time.sleep(0.1)
 
 def display_message(msg, color, y_displace = 0, size="small"):
@@ -221,6 +232,7 @@ def start():
 	x_change = 0
 	y_change = 0
 
+	image_no = 0;
 	snakeList = [[x_cord, y_cord]]
 	HeadDirection = "up"
 	[apple_x, apple_y] = Generate_apple_Coord(snakeList)
@@ -319,7 +331,7 @@ def start():
 					if resume == False:
 						return False
 
-					fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection)
+					fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection, image_no)
 					time.sleep(2)
 
 		x_cord += x_change
@@ -332,27 +344,27 @@ def start():
 			
 
 		if gameOver == False:
-
 			if x_change + y_change != 0 and gameOver == False:
 				snakeList.append([x_cord, y_cord])
 				
 				#Checking whether snake is eating itself !! :( :P
 				if [x_cord, y_cord] in snakeList[:-1]:
 
-					fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection)					
+					fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection, image_no)					
 					GameOverDisplay(apple_x, apple_y, snakeList, HeadDirection)
 					gameOver = True
 			
 				if isSnake_Eating_Apple(x_cord, y_cord, block_size, apple_x, apple_y, apple_width):
 					
-					fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection)
+					fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection, image_no)
+					image_no = random.randrange(0,4)
 					[apple_x, apple_y] = Generate_apple_Coord(snakeList)
 					score += 10
 
 				else:
 					snakeList.pop(0)
 				
-			fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection)
+			fill_the_screen(score, apple_x, apple_y, snakeList, HeadDirection, image_no)
 	
 		clock.tick(FPS)
 		
